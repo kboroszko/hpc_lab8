@@ -97,6 +97,7 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     assert(graph->numVertices > 0);
     assert(graph->firstRowIdxIncl >= 0 && graph->lastRowIdxExcl <= graph->numVertices);
 
+    int numVertices = graph->numVertices;
     int start = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank);
     int end = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank + 1);
     int rows = end - start;
