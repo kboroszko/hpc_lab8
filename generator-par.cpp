@@ -61,18 +61,21 @@ int main(int argc, char *argv[]) {
             std::cerr << "NODE[" << myRank << "]: collected and printed graph\n";
     }
 
-    for(int i = 0; i<numProcesses; i++){
-        MPI_Barrier(MPI_COMM_WORLD);
-        if(i == myRank){
-            std::cerr << "NODE[" << myRank << "]: destroying graph part\n";
-            destroyGraph(graph, numProcesses, myRank);
-            std::cerr << "NODE[" << myRank << "]: destroyed graph\n";
-        } else {
-            sleep(1);
-        }
-    }
-
     MPI_Finalize();
+    return 2;
 
-    return 0;
+//    for(int i = 0; i<numProcesses; i++){
+//        MPI_Barrier(MPI_COMM_WORLD);
+//        if(i == myRank){
+//            std::cerr << "NODE[" << myRank << "]: destroying graph part\n";
+//            destroyGraph(graph, numProcesses, myRank);
+//            std::cerr << "NODE[" << myRank << "]: destroyed graph\n";
+//        } else {
+//            sleep(1);
+//        }
+//    }
+//
+//    MPI_Finalize();
+//
+//    return 0;
 }
