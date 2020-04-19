@@ -8,6 +8,7 @@
 #include <mpi.h>
 #include "graph-base.h"
 #include "graph-utils.h"
+#include <malloc.h>
 
 int getFirstGraphRowOfProcess(int numVertices, int numProcesses, int myRank) {
     if(myRank == numProcesses){
@@ -112,9 +113,9 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
 
     if(myRank == 0){
-        recv_data = (int*) malloc(sizeof(int) * numVertices*rowsInOne*(numProcesses-1));
+        recv_data = new int[(numVertices*rowsInOne*(numProcesses-1))];
     } else {
-        send_data = (int*) malloc(sizeof(int) * numVertices*rowsInOne);
+        send_data = new int[numVertices*rowsInOne];
         for(int i=0; i<rows; i++){
             send_data[i*numVertices] = graph->data[i];
         }
@@ -136,9 +137,9 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
         for(int i=0; i<(graph->numVertices - rows); i++){
             printGraphRow(recv_data + (i*numVertices),0, numVertices );
         }
-        free(recv_data);
+        delete[] recv_data;
     } else {
-        free(send_data);
+        delete[] send_data;
     }
     free(send_data)
 }
