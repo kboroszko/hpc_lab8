@@ -39,47 +39,49 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
 
     assert(graph->numVertices > 0 && graph->numVertices == numVertices);
     assert(graph->firstRowIdxIncl >= 0 && graph->lastRowIdxExcl <= graph->numVertices);
-//
-//    if(myRank == 0){
-//
-//        int recipientRank = 1;
-//        int partStart = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank);
-//        int partEnd = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank + 1) - 1;
-//
-//        int *row = new int[numProcesses];
-//
-//        for (int i = 0; i < graph->numVertices; ++i) {
-//            if(i < partStart){
-//                initializeGraphRow(graph->data[i], i, graph->numVertices);
-//            } else {
-//                initializeGraphRow(row, i, numVertices);
-////                MPI_Request request;
-//                MPI_Send(row,
-//                        numVertices,
-//                        MPI_INT,
-//                        recipientRank,
-//                        0,
-//                        MPI_COMM_WORLD
-////                        ,&request
-//                        );
-//            }
-//            if(i == partEnd){
-//                recipientRank++;
-//                partStart = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank);
-//                partEnd = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank + 1) - 1;
-//            }
-//        }
-//
-//        delete[] row;
-//        MPI_Barrier(MPI_COMM_WORLD);
-//    } else {
-//        int rows = end - start;
-//        for(int i = 0; i < rows; i++){
-//            //recieve data synchronously
-//            MPI_Recv(graph->data[i], graph->numVertices, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-//        }
-//        MPI_Barrier(MPI_COMM_WORLD);
-//    }
+
+    if(myRank == 0){
+
+        int recipientRank = 1;
+        int partStart = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank);
+        int partEnd = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank + 1) - 1;
+
+        int *row = new int[numProcesses];
+
+        for (int i = 0; i < graph->numVertices; ++i) {
+            if(i < partStart){
+                initializeGraphRow(graph->data[i], i, graph->numVertices);
+            } else {
+                initializeGraphRow(row, i, numVertices);
+//                MPI_Request request;
+                MPI_Send(row,
+                        numVertices,
+                        MPI_INT,
+                        recipientRank,
+                        0,
+                        MPI_COMM_WORLD
+//                        ,&request
+                        );
+            }
+            if(i == partEnd){
+                recipientRank++;
+                partStart = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank);
+                partEnd = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank + 1) - 1;
+            }
+        }
+
+        delete[] row;
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+    else {
+        int rows = end - start;
+        std::cerr << "Node[" << myRank << "]: I have " << rows << " rows. From=" << start << " To=" << end << "\n";
+        for(int i = 0; i < rows; i++){
+            //recieve data synchronously
+            MPI_Recv(graph->data[i], graph->numVertices, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
 
     return graph;
 }
