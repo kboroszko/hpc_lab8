@@ -113,15 +113,16 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
 
     int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
 
-    if(myRank == 0){
-        recv_data = new int[(numVertices*rowsInOne*(numProcesses-1))];
-    } else {
-        send_data = new int[numVertices*rowsInOne];
-        for(int i=0; i<rows; i++){
-            for(int j=0; j < numVertices; j++){
-                send_data[i*numVertices + j] = graph->data[i][j];
-            }
+    send_data = new int[numVertices*rowsInOne];
+
+    for(int i=0; i<rows; i++){
+        for(int j=0; j < numVertices; j++){
+            send_data[i*numVertices + j] = graph->data[i][j];
         }
+    }
+
+    if(myRank == 0){
+        recv_data = new int[(numVertices*rowsInOne*(numProcesses))];
     }
 
     MPI_Gather(
@@ -135,15 +136,13 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
             MPI_COMM_WORLD);
 
     if(myRank == 0){
-        for(int i=0; i<rows; i++)
-            printGraphRow(graph->data[i], 0, graph->numVertices);
-        for(int i=0; i<(graph->numVertices - rows); i++){
+        for(int i=0; i<graph->numVertices; i++){
             printGraphRow(recv_data + (i*numVertices),0, numVertices );
         }
         delete[] recv_data;
-    } else {
-        delete[] send_data;
     }
+
+    delete[] send_data;
 }
 
 void destroyGraph(Graph* graph, int numProcesses, int myRank) {
