@@ -53,17 +53,20 @@ int main(int argc, char *argv[]) {
         return 2;
     }
 
-    collectAndPrintGraph(graph, numProcesses, myRank);
-
     for(int i = 0; i<numProcesses; i++){
         MPI_Barrier(MPI_COMM_WORLD);
         if(i == myRank)
-            std::cerr << "NODE[" << myRank << "]: collected and printed graph\n";
+            std::cerr << "NODE[" << myRank << "]: created graph\n";
     }
 
-    MPI_Finalize();
-    return 2;
-
+//    collectAndPrintGraph(graph, numProcesses, myRank);
+//
+//    for(int i = 0; i<numProcesses; i++){
+//        MPI_Barrier(MPI_COMM_WORLD);
+//        if(i == myRank)
+//            std::cerr << "NODE[" << myRank << "]: collected and printed graph\n";
+//    }
+//
 //    for(int i = 0; i<numProcesses; i++){
 //        MPI_Barrier(MPI_COMM_WORLD);
 //        if(i == myRank){
@@ -74,8 +77,8 @@ int main(int argc, char *argv[]) {
 //            sleep(1);
 //        }
 //    }
-//
-//    MPI_Finalize();
-//
-//    return 0;
+
+    MPI_Finalize();
+
+    return 0;
 }
