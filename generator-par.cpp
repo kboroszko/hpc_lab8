@@ -45,8 +45,8 @@ int main(int argc, char *argv[]) {
             return 0;
         }
     }
-
-    auto graph = createAndDistributeGraph(numVertices, numProcesses, myRank);
+    Graph * graph = nullptr;
+//    auto graph = createAndDistributeGraph(numVertices, numProcesses, myRank);
     if (graph == nullptr) {
         std::cerr << "Error creating the graph." << std::endl;
         MPI_Finalize();
