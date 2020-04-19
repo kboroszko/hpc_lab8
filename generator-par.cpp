@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
     }
 
     collectAndPrintGraph(graph, numProcesses, myRank);
+
+    std::cerr << "NODE[" << myRank << "]: collected and printed graph";
     destroyGraph(graph, numProcesses, myRank);
 
     MPI_Finalize();
