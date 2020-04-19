@@ -117,7 +117,9 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     } else {
         send_data = new int[numVertices*rowsInOne];
         for(int i=0; i<rows; i++){
-            send_data[i*numVertices] = graph->data[i];
+            for(int j=0; j < numVertices; j++){
+                send_data[i*numVertices + j] = graph->data[i][j];
+            }
         }
     }
 
