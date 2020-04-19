@@ -50,7 +50,9 @@ int main(int argc, char * argv[])
       return 0;
     }
   }
-  
+
+    fprintf(stderr, "started, node%d \n", myRank);
+
   graph = myCreateAndDistributeGraph(numVertices, numProcesses, myRank);
 
 
