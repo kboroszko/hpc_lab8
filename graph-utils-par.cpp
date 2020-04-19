@@ -9,6 +9,7 @@
 #include "graph-base.h"
 #include "graph-utils.h"
 #include <malloc.h>
+#include <stdio>
 
 int getFirstGraphRowOfProcess(int numVertices, int numProcesses, int myRank) {
     if(myRank == numProcesses){
