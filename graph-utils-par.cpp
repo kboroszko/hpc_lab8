@@ -62,8 +62,8 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
                         MPI_INT,
                         recipientRank,
                         0,
-                        MPI_COMM_WORLD,
-//                        &request
+                        MPI_COMM_WORLD
+//                        ,&request
                         );
             }
             if(i == partEnd){
@@ -79,12 +79,12 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
         int rows = end - start;
         for(int i = 0; i < rows; i++){
             //recieve data synchronously
-            MPI_Recv(dataToSend->data[i], dataToSend->numVertices, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(graph->data[i], graph->numVertices, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
         MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    freeGraphPart(dataToSend);
+//    freeGraphPart(dataToSend);
 
     //  node 0:
     //      create whole graph
