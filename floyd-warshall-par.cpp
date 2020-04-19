@@ -16,6 +16,44 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
     assert(numProcesses <= graph->numVertices);
 
     /* FIXME: implement */
+
+    int start = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank);
+    int end = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank + 1);
+    int rows = end-start;
+    int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
+
+    //broadcast extra row
+    for(int k=0; k < graph->numVertices; k++){
+        if(k >= start && k <= end){
+            for(int i=0; i<graph->numVertices; i++){
+                graph->extraRow[i] = graph->data[k-start][i];
+            }
+        }
+
+        MPI_Request request;
+        MPI_Ibarrier(MPI_COMM_WORLD, &request);
+
+        MPI_Bcast( graph->extraRow, graph->numVertices, MPI_INT, k/rowsInOne ,
+                MPI_COMM_WORLD );
+
+        for(int i=0; i<rows; i++){
+            for(int j=0; j<graph->numVertices; j++){
+                int pathSum = graph->data[i][k] + graph->extraRow[j];
+                if(graph->data[i][j] > pathSum)
+                    graph->data[i][j] = pathSum;
+            }
+        }
+
+        MPI_Wait(&request, MPI_STATUS_IGNORE);
+
+    }
+
+    // for row in my rows:
+    //      calc M[i,k] + M[k,j]
+    //      if
+
+
+
 }
 
 
