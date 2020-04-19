@@ -52,6 +52,10 @@ int main(int argc, char * argv[])
   }
   
   graph = myCreateAndDistributeGraph(numVertices, numProcesses, myRank);
+
+
+    fprintf(stderr, "Created and distributed the graph, node%d \n", myRank);
+
   if (graph == NULL)
   {
     fprintf(stderr, "Error creating the graph.\n");
