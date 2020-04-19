@@ -141,7 +141,6 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     } else {
         delete[] send_data;
     }
-    free(send_data)
 }
 
 void destroyGraph(Graph* graph, int numProcesses, int myRank) {
