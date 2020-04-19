@@ -60,7 +60,9 @@ int main(int argc, char * argv[])
   }
   
   myCollectAndPrintGraph(graph, numProcesses, myRank);
-  
+
+  fprintf(stderr, "Collected and printed the graph, node%d \n", myRank);
+
   myDestroyGraph(graph, numProcesses, myRank);
   
   MPI_Finalize();

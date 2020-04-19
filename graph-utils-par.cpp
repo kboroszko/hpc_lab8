@@ -122,7 +122,7 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     }
 
     if(myRank == 0){
-        recv_data = new int[(numVertices*rowsInOne*(numProcesses))];
+        recv_data = new int[numVertices*rowsInOne*numProcesses];
     }
 
     MPI_Gather(
