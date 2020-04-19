@@ -25,15 +25,6 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
     int start = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank);
     int end = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank + 1);
 
-    Graph* dataToSend = nullptr;
-
-    if(myRank == 0){
-        dataToSend = allocateGraphPart(
-                numVertices,
-                0,
-                numVertices
-        );
-    }
 
     graph = allocateGraphPart(
             numVertices,
@@ -50,22 +41,30 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
     assert(graph->firstRowIdxIncl >= 0 && graph->lastRowIdxExcl <= graph->numVertices);
 
     if(myRank == 0){
+//        int buf_size = numVertices*rowsInOne*(numProcesses-1) + MPI_BSEND_OVERHEAD;
+//        int * b = new int[buf_size];
+//        MPI_Buffer_attach( b, buf_size*sizeof(int) );
+
         int recipientRank = 1;
         int partStart = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank);
         int partEnd = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank + 1) - 1;
+
+        int *row = new int[numProcesses];
+
         for (int i = 0; i < graph->numVertices; ++i) {
             if(i < partStart){
                 initializeGraphRow(graph->data[i], i, graph->numVertices);
             } else {
-                initializeGraphRow(dataToSend->data[i], i, dataToSend->numVertices);
-                MPI_Request request;
-                MPI_Isend(dataToSend->data[i],
-                        dataToSend->numVertices,
+                initializeGraphRow(row, i, numVertices);
+//                MPI_Request request;
+                MPI_Send(row,
+                        numVertices,
                         MPI_INT,
                         recipientRank,
                         0,
                         MPI_COMM_WORLD,
-                        &request);
+//                        &request
+                        );
             }
             if(i == partEnd){
                 recipientRank++;
@@ -73,6 +72,8 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
                 partEnd = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank + 1) - 1;
             }
         }
+
+        delete[] row;
         MPI_Barrier(MPI_COMM_WORLD);
     } else {
         int rows = end - start;
