@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <mpi.h>
+#include <time.h>
 #include "graph-base.h"
 #include "graph-utils.h"
 
@@ -66,6 +67,8 @@ int main(int argc, char *argv[]) {
             std::cerr << "NODE[" << myRank << "]: destroying graph part\n";
             destroyGraph(graph, numProcesses, myRank);
             std::cerr << "NODE[" << myRank << "]: destroyed graph\n";
+        } else {
+            sleep(1);
         }
     }
 
