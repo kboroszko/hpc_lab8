@@ -76,7 +76,6 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
     }
     else {
         int rows = end - start;
-        std::cerr << "Node[" << myRank << "]: I have " << rows << " rows. From=" << start << " To=" << end-1 << "\n";
         for(int i = 0; i < rows; i++){
             //recieve data synchronously
             MPI_Recv(graph->data[i], graph->numVertices, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
