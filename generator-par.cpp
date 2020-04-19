@@ -60,8 +60,14 @@ int main(int argc, char *argv[]) {
             std::cerr << "NODE[" << myRank << "]: collected and printed graph";
     }
 
-
-    destroyGraph(graph, numProcesses, myRank);
+    for(int i = 0; i<numProcesses; i++){
+        MPI_Barrier(MPI_COMM_WORLD);
+        if(i == myRank){
+            std::cerr << "NODE[" << myRank << "]: destroying graph part";
+            destroyGraph(graph, numProcesses, myRank);
+            std::cerr << "NODE[" << myRank << "]: destroyed graph";
+        }
+    }
 
     MPI_Finalize();
 
