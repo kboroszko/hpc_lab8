@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 #include <mpi.h>
-#include <time.h>
+#include <unistd.h>
 #include "graph-base.h"
 #include "graph-utils.h"
 
