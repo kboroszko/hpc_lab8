@@ -41,9 +41,6 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
     assert(graph->firstRowIdxIncl >= 0 && graph->lastRowIdxExcl <= graph->numVertices);
 
     if(myRank == 0){
-//        int buf_size = numVertices*rowsInOne*(numProcesses-1) + MPI_BSEND_OVERHEAD;
-//        int * b = new int[buf_size];
-//        MPI_Buffer_attach( b, buf_size*sizeof(int) );
 
         int recipientRank = 1;
         int partStart = getFirstGraphRowOfProcess(numVertices, numProcesses, recipientRank);
@@ -84,17 +81,6 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
         MPI_Barrier(MPI_COMM_WORLD);
     }
 
-//    freeGraphPart(dataToSend);
-
-    //  node 0:
-    //      create whole graph
-    //      send rows to everyone
-    //      free whole graph
-    //      wait for everyone to finish?
-    //
-    //  node other than 0:
-    //  receive my part of the graph
-    //  wait for everyone to finish?
     return graph;
 }
 
@@ -108,8 +94,8 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     int end = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank + 1);
     int rows = end - start;
 
-    int* recv_data = nullptr;
-    int* send_data = nullptr;
+    int* recv_data ;
+    int* send_data ;
 
     int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
 

@@ -59,6 +59,14 @@ int main(int argc, char *argv[]) {
             std::cerr << "NODE[" << myRank << "]: created graph\n";
     }
 
+    sleep(5);
+
+    for(int i = 0; i<numProcesses; i++){
+        MPI_Barrier(MPI_COMM_WORLD);
+        if(i == myRank)
+            std::cerr << "NODE[" << myRank << "]: slept\n";
+    }
+
 //    collectAndPrintGraph(graph, numProcesses, myRank);
 //
 //    for(int i = 0; i<numProcesses; i++){
