@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
 
     double startTime = MPI_Wtime();
 
-//    runFloydWarshallParallel(graph, numProcesses, myRank);
+    runFloydWarshallParallel(graph, numProcesses, myRank);
 
     double endTime = MPI_Wtime();
 
