@@ -57,12 +57,14 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
                 initializeGraphRow(graph->data[i], i, graph->numVertices);
             } else {
                 initializeGraphRow(dataToSend->data[i], i, dataToSend->numVertices);
+                MPI_Request request;
                 MPI_Isend(dataToSend->data[i],
                         dataToSend->numVertices,
                         MPI_INT,
                         recipientRank,
                         0,
-                        MPI_COMM_WORLD);
+                        MPI_COMM_WORLD,
+                        &request);
             }
             if(i == partEnd){
                 recipientRank++;
