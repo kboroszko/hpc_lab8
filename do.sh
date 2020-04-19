@@ -1,5 +1,6 @@
 #!/bin/bash
+make clean
 git pull
 make
-sbatch graph.batch
+sbatch generate.batch
 squeue -u kb385496
