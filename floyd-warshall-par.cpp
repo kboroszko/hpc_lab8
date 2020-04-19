@@ -47,13 +47,6 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
         MPI_Wait(&request, MPI_STATUS_IGNORE);
 
     }
-
-    // for row in my rows:
-    //      calc M[i,k] + M[k,j]
-    //      if
-
-
-
 }
 
 
@@ -112,7 +105,7 @@ int main(int argc, char *argv[]) {
 
     double startTime = MPI_Wtime();
 
-    runFloydWarshallParallel(graph, numProcesses, myRank);
+//    runFloydWarshallParallel(graph, numProcesses, myRank);
 
     double endTime = MPI_Wtime();
 
