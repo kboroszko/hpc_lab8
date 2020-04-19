@@ -2,5 +2,5 @@
 make clean
 git pull
 make
-sbatch generate.batch
+sbatch graph.batch
 squeue -u kb385496

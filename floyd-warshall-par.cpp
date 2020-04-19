@@ -22,9 +22,10 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
     int rows = end-start;
     int rowsInOne = (graph->numVertices + numProcesses - 1)/numProcesses;
 
-    //broadcast extra row
     for(int k=0; k < graph->numVertices; k++){
-        if(k >= start && k <= end){
+        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << start << " end=" << end << "\n";
+        if(k >= start && k < end){
+            std::cerr << "Node[" << myRank << "]: " << k/rowsInOne << " BROADCASTING\n";
             for(int i=0; i<graph->numVertices; i++){
                 graph->extraRow[i] = graph->data[k-start][i];
             }
