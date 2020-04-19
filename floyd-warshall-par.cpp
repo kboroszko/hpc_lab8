@@ -17,10 +17,10 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
 
     /* FIXME: implement */
 
-    int start = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank);
-    int end = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank + 1);
+    int start = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, myRank);
+    int end = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, myRank + 1);
     int rows = end-start;
-    int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
+    int rowsInOne = (graph->numVertices + numProcesses - 1)/numProcesses;
 
     //broadcast extra row
     for(int k=0; k < graph->numVertices; k++){
