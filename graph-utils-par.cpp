@@ -82,6 +82,8 @@ Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
         MPI_Barrier(MPI_COMM_WORLD);
     }
 
+    freeGraphPart(dataToSend);
+
     //  node 0:
     //      create whole graph
     //      send rows to everyone
@@ -104,17 +106,41 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     int end = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank + 1);
     int rows = end - start;
 
-    /* FIXME: implement */
-    for(int node=0; node<numProcesses; node++){
-        MPI_Request request;
-        MPI_Ibarrier(MPI_COMM_WORLD, &request);
-        if(myRank == node){
-            for(int i=0; i<rows; i++){
-                printGraphRow(graph->data[i], 0, graph->numVertices);
-            }
-            MPI_Wait(&request, MPI_STATUS_IGNORE);
+    int* recv_data = nullptr;
+    int* send_data = nullptr;
+
+    int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
+
+    if(myRank == 0){
+        recv_data = (int*) malloc(sizeof(int) * numVertices*rowsInOne*(numProcesses-1));
+    } else {
+        send_data = (int*) malloc(sizeof(int) * numVertices*rowsInOne);
+        for(int i=0; i<rows; i++){
+            send_data[i*numVertices] = graph->data[i];
         }
     }
+
+    MPI_Gather(
+            send_data,
+            numVertices*rowsInOne,
+            MPI_INT,
+            recv_data,
+            numVertices*rowsInOne,
+            MPI_INT,
+            0,
+            MPI_COMM_WORLD);
+
+    if(myRank == 0){
+        for(int i=0; i<rows; i++)
+            printGraphRow(graph->data[i], 0, graph->numVertices);
+        for(int i=0; i<(graph->numVertices - rows); i++){
+            printGraphRow(recv_data + (i*numVertices),0, numVertices );
+        }
+        free(recv_data);
+    } else {
+        free(send_data);
+    }
+    free(send_data)
 }
 
 void destroyGraph(Graph* graph, int numProcesses, int myRank) {

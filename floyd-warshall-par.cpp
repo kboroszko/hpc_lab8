@@ -58,7 +58,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    std::cerr << "Running the Floyd-Warshall algorithm for a graph with " << numVertices << " vertices." << std::endl;
+    if(myRank == 0)
+        std::cerr << "Running the Floyd-Warshall algorithm for a graph with " << numVertices << " vertices." << std::endl;
 
     auto graph = createAndDistributeGraph(numVertices, numProcesses, myRank);
     if (graph == nullptr) {
@@ -77,14 +78,16 @@ int main(int argc, char *argv[]) {
 
     double endTime = MPI_Wtime();
 
-    std::cerr
-            << "The time required for the Floyd-Warshall algorithm on a "
-            << numVertices
-            << "-node graph with "
-            << numProcesses
-            << " process(es): "
-            << endTime - startTime
-            << std::endl;
+    if(myRank == 0) {
+        std::cerr
+                << "The time required for the Floyd-Warshall algorithm on a "
+                << numVertices
+                << "-node graph with "
+                << numProcesses
+                << " process(es): "
+                << endTime - startTime
+                << std::endl;
+    }
 
     if (showResults) {
         collectAndPrintGraph(graph, numProcesses, myRank);
