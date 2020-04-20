@@ -97,39 +97,48 @@ int main(int argc, char *argv[]) {
 //    if(myRank == 0)
 //        std::cerr << "Running the Floyd-Warshall algorithm for a graph with " << numVertices << " vertices." << std::endl;
 
-    auto graph = createAndDistributeGraph(numVertices, numProcesses, myRank);
-    if (graph == nullptr) {
-        std::cerr << "Error distributing the graph for the algorithm." << std::endl;
-        MPI_Finalize();
-        return 2;
+    for(int i=200; i < 2000; i += 200){
+        numVertices = i;
+
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        auto graph = createAndDistributeGraph(numVertices, numProcesses, myRank);
+
+        if (graph == nullptr) {
+            std::cerr << "Error distributing the graph for the algorithm." << std::endl;
+            MPI_Finalize();
+            return 2;
+        }
+
+        double startTime = MPI_Wtime();
+
+        runFloydWarshallParallel(graph, numProcesses, myRank);
+
+        double endTime = MPI_Wtime();
+
+        if(myRank == 0) {
+            std::cerr << numVertices << '\t' << numProcesses << '\t';
+                    << endTime - startTime
+                    << std::endl;
+        }
+
+
+        destroyGraph(graph, numProcesses, myRank);
+
     }
+
+
 
     if (showResults) {
         collectAndPrintGraph(graph, numProcesses, myRank);
     }
 
-    double startTime = MPI_Wtime();
 
-    runFloydWarshallParallel(graph, numProcesses, myRank);
-
-    double endTime = MPI_Wtime();
-
-    if(myRank == 0) {
-        std::cerr
-//                << "The time required for the Floyd-Warshall algorithm on a "
-//                << numVertices
-//                << "-node graph with "
-//                << numProcesses
-//                << " process(es): "
-                << endTime - startTime
-                << std::endl;
-    }
 
     if (showResults) {
         collectAndPrintGraph(graph, numProcesses, myRank);
     }
 
-    destroyGraph(graph, numProcesses, myRank);
 
     MPI_Finalize();
 
