@@ -4,7 +4,7 @@
 #SBATCH --error "par.err"    # stderr redirection
 #SBATCH --account "GC80-33"           # the number of our grant
 #SBATCH --nodes 1                     # how many nodes we want
-#SBATCH --tasks-per-node 10           # each node is 2 socket, 12 core, so we want 24 tasks on each node
+#SBATCH --tasks-per-node 5           # each node is 2 socket, 12 core, so we want 24 tasks on each node
 #SBATCH --time 00:03:00               # if the job runs longer than this, it'll be killed
 
-srun floyd-warshall-par.exe    --show-results 100          # what command to run
+srun floyd-warshall-par.exe    --show-results 11          # what command to run

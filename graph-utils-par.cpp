@@ -136,8 +136,8 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
 
     if(myRank == 0){
         for(int rank=0; rank<graph->numVertices; rank++){
-            int from = get(numVertices, numProcesses, i);
-            int to = get(numVertices, numProcesses, i+1);
+            int from = get(numVertices, numProcesses, rank);
+            int to = get(numVertices, numProcesses, rank+1);
             int rows = to - from;
             int offset = rank * rowsInOne;
             for(int i=0; i<rows; i++){
