@@ -19,13 +19,13 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
     int myRows = graph->lastRowIdxExcl - graph->firstRowIdxIncl;
 
     for(int k=0; k < graph->numVertices; k++){
-        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << graph->firstRowIdxIncl << " end=" << graph->lastRowIdxExcl << "  r=" << myRows << "\n";
+//        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << graph->firstRowIdxIncl << " end=" << graph->lastRowIdxExcl << "  r=" << myRows << "\n";
 
         int start = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank);
         int end = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank + 1);
 
         if(myRank == rootRank){
-            std::cerr << "Node[" << myRank << "]: " << rootRank << " BROADCASTING\n";
+//            std::cerr << "Node[" << myRank << "]: " << rootRank << " BROADCASTING\n";
             for(int i=0; i<graph->numVertices; i++){
                 graph->extraRow[i] = graph->data[k-start][i];
             }
@@ -94,8 +94,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if(myRank == 0)
-        std::cerr << "Running the Floyd-Warshall algorithm for a graph with " << numVertices << " vertices." << std::endl;
+//    if(myRank == 0)
+//        std::cerr << "Running the Floyd-Warshall algorithm for a graph with " << numVertices << " vertices." << std::endl;
 
     auto graph = createAndDistributeGraph(numVertices, numProcesses, myRank);
     if (graph == nullptr) {
@@ -116,11 +116,11 @@ int main(int argc, char *argv[]) {
 
     if(myRank == 0) {
         std::cerr
-                << "The time required for the Floyd-Warshall algorithm on a "
-                << numVertices
-                << "-node graph with "
-                << numProcesses
-                << " process(es): "
+//                << "The time required for the Floyd-Warshall algorithm on a "
+//                << numVertices
+//                << "-node graph with "
+//                << numProcesses
+//                << " process(es): "
                 << endTime - startTime
                 << std::endl;
     }
