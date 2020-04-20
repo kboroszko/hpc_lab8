@@ -15,8 +15,19 @@ int getFirstGraphRowOfProcess(int numVertices, int numProcesses, int myRank) {
     if(myRank == numProcesses){
         return numVertices;
     }
-    int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
-    return myRank * rowsInOne;
+    int rowsInEveryone = numVertices/numProcesses;
+    int rest = numVertices % rowsInEveryone;
+
+    if(rest == 0){
+        return myRank * rowsInEveryone;
+    } else {
+        if(myRank <= rest){
+            return myRank * (rowsInEveryone + 1);
+        } else {
+            int fullRows = rest * (rowsInEveryone + 1);
+            return fullRows + (myRank - rest) * rowsInEveryone;
+        }
+    }
 }
 
 Graph* createAndDistributeGraph(int numVertices, int numProcesses, int myRank) {
@@ -96,7 +107,7 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
     int end = getFirstGraphRowOfProcess(numVertices, numProcesses, myRank + 1);
     int rows = end - start;
 
-    int* recv_data ;
+    int* recv_data = nullptr;
     int* send_data ;
 
     int rowsInOne = (numVertices + numProcesses - 1)/numProcesses;
@@ -124,8 +135,14 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
             MPI_COMM_WORLD);
 
     if(myRank == 0){
-        for(int i=0; i<graph->numVertices; i++){
-            printGraphRow(recv_data + (i*numVertices),0, numVertices );
+        for(int rank=0; rank<graph->numVertices; rank++){
+            int from = get(numVertices, numProcesses, i);
+            int to = get(numVertices, numProcesses, i+1);
+            int rows = to - from;
+            int offset = rank * rowsInOne;
+            for(int i=0; i<rows; i++){
+                printGraphRow(recv_data + offset + (i*numVertices),0, numVertices );
+            }
         }
         delete[] recv_data;
     }
