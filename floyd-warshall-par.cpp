@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 //    if(myRank == 0)
 //        std::cerr << "Running the Floyd-Warshall algorithm for a graph with " << numVertices << " vertices." << std::endl;
 
-    for(int i=200; i < 2000; i += 200){
+    for(int i=200; i < 5000; i += 200){
         numVertices = i;
 
         MPI_Barrier(MPI_COMM_WORLD);
