@@ -144,7 +144,7 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
             for(int i=0; i<rows; i++){
                 std::cerr << "printing row " << (offset + i) << "\n";
                 int rowToPrint = (offset + i);
-                printGraphRow(recv_data + rowToPrint*numVertices),0, numVertices );
+                printGraphRow(recv_data + rowToPrint*numVertices,0, numVertices );
             }
         }
         delete[] recv_data;
