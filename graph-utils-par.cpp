@@ -135,7 +135,7 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
             MPI_COMM_WORLD);
 
     if(myRank == 0){
-        for(int rank=0; rank<graph->numVertices; rank++){
+        for(int rank=0; rank<numProcesses; rank++){
             int from = getFirstGraphRowOfProcess(numVertices, numProcesses, rank);
             int to = getFirstGraphRowOfProcess(numVertices, numProcesses, rank+1);
             int rows = to - from;
