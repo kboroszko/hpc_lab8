@@ -19,13 +19,13 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
     int myRows = graph->lastRowIdxExcl - graph->lastRowIdxExcl;
 
     for(int k=0; k < graph->numVertices; k++){
-//        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << start << " end=" << end << "\n";
+        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << start << " end=" << end << "\n";
 
         int start = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank);
         int end = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank + 1);
 
         if(myRank == rootRank){
-//            std::cerr << "Node[" << myRank << "]: " << k/rowsInOne << " BROADCASTING\n";
+            std::cerr << "Node[" << myRank << "]: " << k/rowsInOne << " BROADCASTING\n";
             for(int i=0; i<graph->numVertices; i++){
                 graph->extraRow[i] = graph->data[k-start][i];
             }
