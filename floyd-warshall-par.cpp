@@ -31,10 +31,6 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
             }
         }
 
-        if(k == (end - 1)){
-            rootRank += 1;
-        }
-
         MPI_Request request;
         MPI_Ibarrier(MPI_COMM_WORLD, &request);
 
@@ -51,6 +47,10 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
 
         MPI_Wait(&request, MPI_STATUS_IGNORE);
 
+
+        if(k == (end - 1)){
+            rootRank += 1;
+        }
     }
 }
 
