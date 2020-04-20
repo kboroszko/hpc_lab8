@@ -136,12 +136,15 @@ void collectAndPrintGraph(Graph* graph, int numProcesses, int myRank) {
 
     if(myRank == 0){
         for(int rank=0; rank<numProcesses; rank++){
+            std::cerr << "printing for " << rank << "\n";
             int from = getFirstGraphRowOfProcess(numVertices, numProcesses, rank);
             int to = getFirstGraphRowOfProcess(numVertices, numProcesses, rank+1);
             int rows = to - from;
             int offset = rank * rowsInOne;
             for(int i=0; i<rows; i++){
-                printGraphRow(recv_data + offset + (i*numVertices),0, numVertices );
+                std::cerr << "printing row " << (offset + i) << "\n";
+                int rowToPrint = (offset + i);
+                printGraphRow(recv_data + rowToPrint*numVertices),0, numVertices );
             }
         }
         delete[] recv_data;
