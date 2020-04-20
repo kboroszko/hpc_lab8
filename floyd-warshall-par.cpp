@@ -127,18 +127,6 @@ int main(int argc, char *argv[]) {
     }
 
 
-
-    if (showResults) {
-        collectAndPrintGraph(graph, numProcesses, myRank);
-    }
-
-
-
-    if (showResults) {
-        collectAndPrintGraph(graph, numProcesses, myRank);
-    }
-
-
     MPI_Finalize();
 
     return 0;
