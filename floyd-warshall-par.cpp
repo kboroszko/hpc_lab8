@@ -14,30 +14,34 @@
 
 static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank) {
     assert(numProcesses <= graph->numVertices);
+    int rootRank = 0;
 
-    /* FIXME: implement */
-
-    int start = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, myRank);
-    int end = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, myRank + 1);
-    int rows = end-start;
-    int rowsInOne = (graph->numVertices + numProcesses - 1)/numProcesses;
+    int myRows = graph->lastRowIdxExcl - graph->lastRowIdxExcl;
 
     for(int k=0; k < graph->numVertices; k++){
 //        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << start << " end=" << end << "\n";
-        if(k >= start && k < end){
+
+        int start = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank);
+        int end = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank + 1);
+
+        if(myRank == rootRank){
 //            std::cerr << "Node[" << myRank << "]: " << k/rowsInOne << " BROADCASTING\n";
             for(int i=0; i<graph->numVertices; i++){
                 graph->extraRow[i] = graph->data[k-start][i];
             }
         }
 
+        if(k == (end - 1)){
+            rootRank += 1;
+        }
+
         MPI_Request request;
         MPI_Ibarrier(MPI_COMM_WORLD, &request);
 
-        MPI_Bcast( graph->extraRow, graph->numVertices, MPI_INT, k/rowsInOne ,
+        MPI_Bcast( graph->extraRow, graph->numVertices, MPI_INT, rootRank ,
                 MPI_COMM_WORLD );
 
-        for(int i=0; i<rows; i++){
+        for(int i=0; i<myRows; i++){
             for(int j=0; j<graph->numVertices; j++){
                 int pathSum = graph->data[i][k] + graph->extraRow[j];
                 if(graph->data[i][j] > pathSum)
