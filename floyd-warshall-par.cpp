@@ -118,8 +118,7 @@ int main(int argc, char *argv[]) {
 
         if(myRank == 0) {
             std::cerr << numVertices << '\t' << numProcesses << '\t';
-                    << endTime - startTime
-                    << std::endl;
+            std::cerr << endTime - startTime << std::endl;
         }
 
 
