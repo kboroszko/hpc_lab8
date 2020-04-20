@@ -16,10 +16,10 @@ static void runFloydWarshallParallel(Graph* graph, int numProcesses, int myRank)
     assert(numProcesses <= graph->numVertices);
     int rootRank = 0;
 
-    int myRows = graph->lastRowIdxExcl - graph->lastRowIdxExcl;
+    int myRows = graph->lastRowIdxExcl - graph->firstRowIdxIncl;
 
     for(int k=0; k < graph->numVertices; k++){
-        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << graph->lastRowIdxExcl << " end=" << graph->lastRowIdxExcl << "\n";
+        std::cerr << "Node[" << myRank << "]: k=" << k << " start=" << graph->firstRowIdxIncl << " end=" << graph->lastRowIdxExcl << "  r=" << myRows << "\n";
 
         int start = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank);
         int end = getFirstGraphRowOfProcess(graph->numVertices, numProcesses, rootRank + 1);
